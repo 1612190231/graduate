@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luck.graduate.dao.AuthorDao">
+    <insert id="insertAuthor" parameterType="com.luck.graduate.entity.AuthorModel">
+        INSERT INTO db_auth.auth_author
+        (author_name, create_date)
+        VALUES
+        (#{authorName}, #{createDate})
+    </insert>
+
+    <delete id="deleteAuthor" parameterType="com.luck.graduate.entity.AuthorModel">
+        DELETE FROM db_auth.auth_author
+        WHERE author_id = #{authorId}
+    </delete>
+
+    <update id="updateAuthor" parameterType="com.luck.graduate.entity.AuthorModel">
+        UPDATE db_auth.auth_author SET
+        author_name = #{authorName}
+        WHERE author_id = #{authorId}
+    </update>
+
+    <select id="getAuthor" resultType="com.luck.graduate.entity.AuthorModel" parameterType="com.luck.graduate.entity.RoleModel">
+        SELECT a.author_id, a.author_name, ra.role_id, ra.role_is
+        FROM db_auth.auth_author a
+        LEFT JOIN db_auth.auth_role_author ra ON a.author_id = ra.author_id
+        WHERE ra.role_id = #{roleId}
+    </select>
+
+    <select id="getAll" resultType="com.luck.graduate.entity.RoleAuthorModel">
+        select author_id
+        from db_auth.auth_author
+    </select>
+</mapper>

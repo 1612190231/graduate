@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luck.graduate.dao.UserDao">
+    <insert id="insertUser" parameterType="com.luck.graduate.entity.UserModel">
+        insert into db_auth.auth_user
+        (login_name, password, user_name, update_date)
+        values(#{loginName}, #{pwd}, #{userName}, #{updateDate})
+    </insert>
+
+    <select id="selectUserByDate" parameterType="com.luck.graduate.entity.UserModel" resultType="com.luck.graduate.entity.UserModel">
+        select * from db_auth.auth_user
+        where update_date = #{updateDate}
+    </select>
+
+    <select id="login" parameterType="com.luck.graduate.entity.UserModel" resultType="com.luck.graduate.entity.UserModel">
+        select u.user_id, u.user_name, u.user_phone, r.role_name, u.login_name, u.password pwd
+        from db_auth.auth_user u
+        left join db_auth.auth_user_role ur on u.user_id = ur.user_id
+        left join db_auth.auth_role r ON ur.role_id = r.role_id
+        where login_name = #{userName} and password = #{pwd}
+    </select>
+
+    <select id="selectUser" parameterType="com.luck.graduate.entity.UserModel" resultType="com.luck.graduate.entity.UserModel">
+        SELECT
+        a.author_name
+        FROM db_auth.auth_user u
+        LEFT JOIN db_auth.auth_user_role ur ON u.user_id = ur.user_id
+        LEFT JOIN db_auth.auth_role r ON ur.role_id = r.role_id
+        LEFT JOIN db_auth.auth_role_author ra ON ra.role_id = ur.role_id
+        LEFT JOIN db_auth.auth_author a ON ra.author_id = a.author_id
+        WHERE u.user_id = #{userId} AND ra.role_is = 1
+    </select>
+
+    <update id="changePsd" parameterType="com.luck.graduate.entity.UserModel">
+        update db_auth.auth_user set
+        password = #{pwd}
+        where login_name = #{userName}
+    </update>
+
+    <insert id="insertUserRole" parameterType="com.luck.graduate.entity.UserRoleModel">
+        INSERT INTO db_auth.auth_user_role
+        (user_id, role_id, create_date)
+        VALUES
+        (#{userId}, #{roleId}, #{createDate})
+    </insert>
+    
+    <update id="updateUserRole" parameterType="com.luck.graduate.entity.UserModel">
+        <if test="userModels != null and userModels.size() > 0">
+            UPDATE db_auth.auth_user_role SET role_id = 0
+            WHERE user_id IN
+            <foreach collection="userModels" item="item" separator="," open="(" close=")">
+                #{item.userId}
+            </foreach>;
+        </if>
+        <if test="iUsers != null and iUsers.size() > 0">
+            UPDATE db_auth.auth_user_role SET role_id = #{roleId}
+            WHERE user_id IN
+            <foreach collection="iUsers" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="updateUserRoleByRoleId" parameterType="com.luck.graduate.entity.UserModel">
+        update db_auth.auth_user_role
+        set role_id = 0
+        where role_id = #{roleId}
+    </update>
+
+    <delete id="deleteUserRole" parameterType="com.luck.graduate.entity.UserRoleModel">
+        DELETE FROM db_auth.auth_user_role
+        WHERE row_id = #{rowId}
+    </delete>
+
+    <select id="selectUserRole" parameterType="com.luck.graduate.entity.UserModel" resultType="com.luck.graduate.entity.UserRoleModel">
+        SELECT * FROM db_auth.auth_user_role
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserList" parameterType="com.luck.graduate.entity.UserModel" resultType="com.luck.graduate.entity.UserModel">
+        SELECT u.user_id, u.user_name, ur.role_id FROM db_auth.auth_user u
+        LEFT JOIN db_auth.auth_user_role ur ON u.user_id = ur.user_id
+    </select>
+</mapper>
+
+

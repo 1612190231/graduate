@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luck.graduate.dao.RoleDao">
+    <insert id="insertRole" parameterType="com.luck.graduate.entity.RoleModel">
+        INSERT INTO db_auth.auth_role
+        (role_name, create_date)
+        VALUES
+        (#{roleName}, #{createDate})
+    </insert>
+
+    <delete id="deleteRole" parameterType="com.luck.graduate.entity.RoleModel">
+        DELETE FROM db_auth.auth_role
+        WHERE role_id = #{roleId}
+    </delete>
+
+    <select id="getRole" resultType="com.luck.graduate.entity.RoleModel">
+        SELECT role_id, role_name FROM db_auth.auth_role
+    </select>
+
+    <update id="updateRole" parameterType="com.luck.graduate.entity.RoleModel">
+        UPDATE db_auth.auth_role SET
+        role_name = #{roleName},
+        update_date = #{updateDate}
+        WHERE role_id = #{roleId}
+    </update>
+
+    <insert id="insertRoleAuthor" parameterType="com.luck.graduate.entity.RoleAuthorModel">
+        INSERT INTO db_auth.auth_role_author
+        (role_id, author_id, role_is)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId}, #{item.authorId}, #{item.roleIs})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleAuthor" parameterType="com.luck.graduate.entity.RoleAuthorModel">
+        DELETE FROM db_auth.auth_role_author
+        WHERE role_id = #{roleId}
+    </delete>
+
+    <update id="updateRoleAuthor" parameterType="com.luck.graduate.entity.AuthorModel">
+        UPDATE db_auth.auth_role_author SET role_is = 0
+        WHERE role_id = #{roleId};
+        <if test="iAuthors != null and iAuthors.size() > 0">
+            UPDATE db_auth.auth_role_author SET role_is = 1
+            WHERE role_id = #{roleId} AND author_id IN
+            <foreach collection="iAuthors" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="selectRoleAuthor" parameterType="com.luck.graduate.entity.RoleModel" resultType="com.luck.graduate.entity.RoleModel">
+        SELECT ra.row_id, r.role_id, r.role_name, a.auth_id, a.author_name FROM db_auth.auth_role r
+        LEFT JOIN db_auth.auth_role_author ra ON r.role_id = ra.role_id
+        LEFT JOIN db_auth.auth_author a ON a.author_id = ra.author_id
+        WHERE r.role_id = #{roleId}
+    </select>
+
+    <select id="selectRole" parameterType="String" resultType="com.luck.graduate.entity.RoleModel">
+        select * from db_auth.auth_role
+        where create_date = #{createDate}
+    </select>
+</mapper>

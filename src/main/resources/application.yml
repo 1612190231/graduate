@@ -1,0 +1,37 @@
+server:
+  port: 8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://120.53.27.131:8761/eureka/,http://140.143.168.197:8761/eureka/
+
+spring:
+  application:
+    name: graduate
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_auth?serverTimezone=UTC&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 19980621
+    max-active: 100
+    min-idle: 8
+    initial-size: 5
+  main:
+    allow-bean-definition-overriding: true
+
+  metrics:
+    servo:
+      enabled: false
+#  jackson:
+#    default-property-inclusion: non_null
+#
+mybatis:
+  typeAliasesPackagecom: com.luck.graduate.*
+  mapperLocations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.log4j.Log4jImpl
+logging:
+  level:
+    com.luck.graduate: debug
