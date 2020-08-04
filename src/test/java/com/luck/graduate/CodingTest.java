@@ -11,20 +11,27 @@ import java.util.Vector;
 @SpringBootTest
 public class CodingTest {
     @Test
-    public int numPairsDivisibleBy60(int[] time) {
-        int count = 0;
-        int mqs[] =new int[60];
-        Arrays.fill(mqs,0);
-        for(Integer item:time){
-            mqs[item % 60] ++;
-        }
-        int u=21;
-        int j=1;
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        boolean mqs[] =new boolean[numCourses];
+        Arrays.fill(mqs,false);
         Map<Integer, Vector<Integer>> mp = new HashMap<>();
-        mp.get(u).elementAt(j);
-        for (int i = 0; i<60; i++){
-            count = count + mqs[i] * mqs[59-i];
+        for(int[] item : prerequisites){
+            Vector<Integer> vec = mp.get(item[1]);
+            vec.add(item[0]);
+            mp.put(item[1], vec);
         }
-        return count;
+        for(int i=0; i<numCourses; i++){
+            if(mqs[i]) continue;
+            Vector<Integer> vec = mp.get(i);
+            for(int j=0; j<vec.size(); j++){
+                int v = vec.get(j);
+                if(mqs[v]) return false;
+                else mqs[v] = true;
+            }
+        }
+        for(boolean mq : mqs){
+            if(mq==false) return false;
+        }
+        return true;
     }
 }

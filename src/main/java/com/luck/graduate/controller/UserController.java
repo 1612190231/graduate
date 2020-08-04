@@ -88,7 +88,7 @@ public class UserController {
             if (msg.equals("用户信息匹配失败")){
                 return Result.error(msg);
             }
-            else {
+            /*else {
                 //向主服务发送token
                 Gson gson = new Gson();
                 HashMap<String, Object> sendMsg = new HashMap<String, Object>();
@@ -97,7 +97,7 @@ public class UserController {
                 sendMsg.put("pwd",result.get("pwd"));
                 String url = "http://120.53.27.131:8205/api/user/login";
                 Header[] responseHeader = this.sendPostRequest(url, gson.toJson(sendMsg));
-                /*if(responseHeader != null && responseHeader.length != 0){
+                if(responseHeader != null && responseHeader.length != 0){
                     for (Header stepHeader : responseHeader){
                         if(stepHeader != null){
                             //System.out.println("--------------");
@@ -109,9 +109,10 @@ public class UserController {
                 }
                 else{
                     return Result.error("主服务访问失败");
-                }*/
+                }
                 return Result.success(result);
-            }
+            }*/
+            return Result.success(result);
         }catch(MyException e){
             return Result.error(e.getCode(), e.getMessage());
         }catch(Exception e){

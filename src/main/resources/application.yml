@@ -1,10 +1,10 @@
 server:
   port: 8888
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://120.53.27.131:8761/eureka/,http://140.143.168.197:8761/eureka/
+#eureka:
+  #client:
+    #service-url:
+      #defaultZone: http://120.53.27.131:8761/eureka/,http://140.143.168.197:8761/eureka/
 
 spring:
   application:
